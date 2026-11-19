@@ -1,0 +1,121 @@
+# Video script: "It's Not Just the Model, It's the Harness"
+
+Slide-by-slide narration for the 15+ minute YouTube presentation. Speaking at a relaxed ~140 words per minute, the full script runs about **16–17 minutes**. The same text is in the speaker notes of `slides/Agent_Harness_Short_Story.pptx`, so you can read it from Presenter View while recording.
+
+| # | Slide | Start | Length |
+|---|---|---|---|
+| 1 | Title | 0:00 | 0:51 |
+| 2 | Hook: same model, 20 points apart | 0:51 | 0:48 |
+| 3 | The paper | 1:39 | 0:45 |
+| 4 | Model vs harness | 2:24 | 0:47 |
+| 5 | Why now: static benchmarks saturate | 3:11 | 0:46 |
+| 6 | Taxonomy: four paradigms | 3:57 | 1:04 |
+| 7 | Unpacking 'self-evolving' | 5:01 | 0:50 |
+| 8 | Architecture: anatomy of a harness | 5:51 | 0:59 |
+| 9 | Six components, six trade-offs | 6:50 | 0:45 |
+| 10 | Evidence 1: SWE-bench Verified | 7:35 | 0:45 |
+| 11 | Evidence 2: Terminal-Bench 2.0 | 8:20 | 0:49 |
+| 12 | Evidence 3: WebArena | 9:09 | 0:51 |
+| 13 | Simple can win, and models still matter | 10:00 | 0:50 |
+| 14 | Accuracy has a token bill | 10:50 | 1:01 |
+| 15 | Matching harness to task | 11:51 | 0:50 |
+| 16 | Companion surveys | 12:41 | 0:55 |
+| 17 | Open challenges | 13:36 | 0:53 |
+| 18 | My two cents | 14:29 | 1:03 |
+| 19 | Takeaways for builders | 15:32 | 0:42 |
+| 20 | Thank you | 16:14 | 0:25 |
+
+**Total: about 16 min 39 s.**
+
+---
+
+## Slide 1: Title  ·  starts 0:00
+
+Hi everyone, I'm Abhishek Darji, an MS Software Engineering student at San José State University. This is my short story on one of the most useful survey papers I've read this year: 'From Question Answering to Task Completion: A Survey on Agent System and Harness Design.' The whole talk comes down to one sentence, which is on the slide. When an AI agent does well or badly, it's not just because of the model. A large part of it comes from the harness, the software that wraps the model at runtime. Over the next fifteen minutes I'll explain what a harness is, how the survey organizes the field, what the leaderboard evidence shows, and what I personally think about it.
+
+## Slide 2: Hook: same model, 20 points apart  ·  starts 0:51
+
+Let me start with a number. Terminal-Bench 2.0 is a benchmark where an agent has to finish real tasks inside a command line, and a test script checks whether it succeeded. Take Gemini 3.1 Pro. Inside Google's Gemini CLI it scores 59.4 percent. Inside a different agent framework called TongAgents, the same model scores 80.2 percent. The weights, the tasks and the benchmark are identical. The only thing that changed is the wrapper, and that's worth almost 21 points. This isn't a one-off. Across twenty models with at least three harness results, the typical gap between a model's best and worst harness is 13.6 points. That's the puzzle this survey tries to explain.
+
+## Slide 3: The paper  ·  starts 1:39
+
+The anchor paper for this story is by Jianyuan Guo, Chang Xu, Yunhe Wang and colleagues at City University of Hong Kong, the University of Sydney, Peking University and TokenRhythm Technologies. It was posted to arXiv in June 2026 as paper 2606.20683, and it has a companion GitHub list called Awesome Agent Engineering. I chose it for three reasons. It's recent. It's about building and running agents, which is very much LLM-ops territory. And unlike many surveys, it doesn't only list papers, it analyzes real leaderboard data. Here's the plan: definitions, the taxonomy, the six-part architecture, the evidence, companion surveys, open challenges, and my two cents.
+
+## Slide 4: Model vs harness  ·  starts 2:24
+
+First, two definitions. The survey splits every agent into two halves. The foundation model is the cognitive engine. It looks at an observation and proposes the next action. The harness is everything else that happens at runtime. It decides what the model sees, which tools it can call, what gets remembered between steps, how the loop runs, and what gets checked before an action actually touches the world. One way to picture it: the model is the driver, and the harness is the car, the dashboard, the brakes and the GPS. A great driver in a bad car still loses races. The rest of the paper builds on this split.
+
+## Slide 5: Why now: static benchmarks saturate  ·  starts 3:11
+
+Why does this matter now? The survey makes a measurement argument. On static knowledge tests like MMLU-Pro and GPQA Diamond, the frontier models from OpenAI, Anthropic and Google now sit in a narrow band near the top, so those tests can't tell the best systems apart very well. The authors call this the measurement boundary. Agent benchmarks are different. They need many steps in a live environment, and the scores still spread out a lot. A big part of that spread comes from the harness. That's the shift in the paper's title: we used to judge models on question answering, and now we judge systems on task completion.
+
+## Slide 6: Taxonomy: four paradigms  ·  starts 3:57
+
+Here's the main taxonomy. The survey describes four paradigms as a migration of engineering effort. These aren't strict eras, and all four still exist today. Paradigm one is prompt engineering, where the effort goes into the single instruction: chain-of-thought, self-consistency, tree-of-thought, ReAct, Reflexion. It changes how you ask, but it can't supply missing knowledge or recover from mistakes over a long run. Paradigm two is workflows and context engineering, where the effort goes into what enters the context window: RAG, GraphRAG, HippoRAG, and newer context-management methods like ACON and ContextBudget. The weakness is that it's still feed-forward. Nothing checks whether the result is right. Paradigm three is harness engineering, where the runtime loop becomes the thing you design, with sandboxes, checkpoints, verification and recovery. Paradigm four is agent-native training, where reinforcement learning bakes planning and tool use into the weights, and in some systems the model and harness co-evolve.
+
+## Slide 7: Unpacking 'self-evolving'  ·  starts 5:01
+
+One idea from the taxonomy that I found especially clarifying is how the survey breaks up the buzzword 'self-evolving agent'. It separates three questions people tend to blur together. Who performs each role? That's the multi-model harness, like Magentic-One or OpenHands sending planning to one model and coding to another. How is the policy optimized? That's the learnable harness, where systems like NLAH, Meta-Harness and AHE treat the harness itself as something you can search or evolve. And when does everything update? That's co-evolution, as in the Darwin Gödel Machine or SICA, where model and harness improve together from their own traces. When someone tells you their agent self-improves, ask which of these three they mean.
+
+## Slide 8: Architecture: anatomy of a harness  ·  starts 5:51
+
+This is the architecture view, and I think it's the most useful part of the paper. The harness is written as a tuple with six parts. The observation interface turns raw signals like terminal output, diffs, screenshots and DOM trees into something the model can read. The context manager decides what goes into each model call. The control loop runs the observe-reason-act cycle, including retries, reflection and stopping rules. The action interface turns model output into real operations: function calls, MCP tools, shell commands, browser clicks or sub-agents. The state and artifact store keeps progress outside the context window, things like plans, checkpoints and memory. And verification and governance checks and constrains everything with tests, verifiers, sandboxes, permissions and rollback. The key point is that these parts are coupled. Change one and you put pressure on the others.
+
+## Slide 9: Six components, six trade-offs  ·  starts 6:50
+
+Each component comes with a built-in trade-off, and this table summarizes them. For observation, richer views ground the model better but cost tokens and add distractors. For context, fidelity fights manageability. The control loop trades adaptability against stability. The action interface trades flexibility against controllability, since giving an agent a raw shell is powerful but hard to govern. State trades completeness against usability, and old state can mislead the agent. Verification trades autonomy against robustness. I now use this as a debugging checklist. When an agent fails, instead of asking whether the model is smart enough, I ask which of these six components broke.
+
+## Slide 10: Evidence 1: SWE-bench Verified  ·  starts 7:35
+
+Now the evidence. The authors pulled together public leaderboard data across three benchmarks, and they say clearly that these are observational comparisons, not controlled ablations. First, SWE-bench Verified, where the agent fixes real GitHub issues. Hold the model fixed and change only the harness. GPT-4o goes from 23.2 percent in SWE-agent to 38.8 percent in Agentless. Claude 3.5 Sonnet goes from 33.6 to 53.6 percent with PatchPilot. Here's the interesting part: Agentless isn't an open-ended loop at all. It's a fixed pipeline: localize, repair, validate. The survey's lesson is that when success can be checked mechanically by tests, structured pipelines can beat free-form agent loops.
+
+## Slide 11: Evidence 2: Terminal-Bench 2.0  ·  starts 8:20
+
+Terminal-Bench 2.0 is the cleanest evidence. The authors processed seventy-five public submissions with logs, over thirty-two thousand trial records in total. Look at the spread for each model. Gemini 3.1 Pro goes from 59.4 to 80.2 percent. Claude Opus 4.6 goes from 58 percent in Claude Code to 76.4 percent in Meta-Harness, a harness that was found by searching over harness designs automatically. GPT-5.3-Codex goes from 64.7 to 78.4. Across twenty models with three or more harness results, the median range is 13.6 points, and fourteen of the twenty vary by at least ten points. So if a leaderboard says model A beats model B by five points, the harness alone could flip that ranking.
+
+## Slide 12: Evidence 3: WebArena  ·  starts 9:09
+
+WebArena is the most dramatic case. These are tasks on self-hosted websites like a shopping site, a forum, a GitLab clone and a map. The grey dot is the model with a minimal scaffold, and the blue dot is the best harness reported for that model. GPT-4o alone gets 13.1 percent. Inside WebOperator it gets 54.6, a gain of more than forty points. Small models benefit too. Llama 3.1 8B goes from 5.6 to 48.5 percent, which is more than three times what bare GPT-4o scores. The survey also notes that when you compare models inside one fixed harness, BrowserGym, the ranking changes again. So a claim like 'model X is better' only holds for a given harness.
+
+## Slide 13: Simple can win, and models still matter  ·  starts 10:00
+
+Two more findings that balance each other. First, bigger isn't automatically better. Mini-SWE-agent is about a hundred lines of Python, and with Claude Opus 4.5 it scores 76.8 percent on SWE-bench Verified. That's within one point of OpenHands, a much larger framework, at 77.6. The authors conclude that interface design matters more than feature count. Second, the model still matters a lot. Keep the SWE-agent harness fixed and move from Claude 3.5 Sonnet to Claude Opus 4, and the score jumps from 49 to 73.2 percent. On Terminal-Bench with Codex CLI, GPT-5 scores 49.6 and GPT-5.5 scores 82.2. So the honest conclusion is that model and harness interact, not that the harness is all that matters.
+
+## Slide 14: Accuracy has a token bill  ·  starts 10:50
+
+This is the finding I think most people reading leaderboards miss. Higher scores usually cost more. On this chart the x-axis is median input tokens per task, on a log scale. Claude Opus 4.6 in Meta-Harness scores 76.4 percent, compared with 62.9 in Terminus 2, but it uses a median of about 755 thousand input tokens per task instead of about 79 thousand. That's almost ten times more context. GPT-5.3-Codex with Mux shows the same pattern: about ten points more for about four times the tokens. The authors are careful here. Only about fifteen percent of trials report dollar cost, so they don't rank harnesses by cost. But the direction is clear: part of the harness gain is bought with compute. They also note that vendor-reported scores sit two to four points above the best open harness, which they attribute to private scaffolding.
+
+## Slide 15: Matching harness to task  ·  starts 11:51
+
+So how do you design a harness for your own task? The survey maps task properties to failure pressures: long horizons, partial observability, strong or weak oracles, irreversible actions and high autonomy. I turned that into my own cheat-sheet. The rows come from the paper, and the specific moves are my interpretation. For long-horizon tasks, invest in context and state: compact the history and checkpoint plans. For irreversible actions, invest in verification and the action interface: sandbox, permission gates, rollback. The principle I took away is to build the verifier around the oracle you actually have. If you have tests, loop on them. If you don't, use provenance, conservative stopping and a human in the loop.
+
+## Slide 16: Companion surveys  ·  starts 12:41
+
+The assignment asked us to bring in more surveys, so here are four recent ones that each zoom into part of the harness. 'Code as Agent Harness', from UIUC, Meta and Stanford in May 2026, argues that code is becoming the material harnesses are built from, because it's executable, inspectable and stateful. It also points out that agents writing their own tests and tools is under-explored. 'Software Engineering for LLM-Based Agents', from October 2026, treats agents as software across five lifecycle stages from requirements to maintenance. That's the LLM-ops view. 'Log Analysis for LLM-Based Agents', also from October, reviews ninety studies on traces as evidence for debugging and evaluation. And the agent-evaluation survey by Yehudai and colleagues at ACL Findings 2026 maps what we should measure beyond success.
+
+## Slide 17: Open challenges  ·  starts 13:36
+
+The survey ends with five open challenges. One: value-aware evaluation. Leaderboards report success and little else, and the authors want cost per effective success and P95 latency reported too. Two: learning to verify and recover. Today self-checking mostly comes from prompting, and they argue it should be trained, with any self-update kept only if it passes held-out tasks, regression tests and safety checks. Three: safe co-evolution, meaning guarding against benchmark overfitting, stale memory and unsafe self-modification, with human approval for high-impact changes. Four: generalization, meaning a shared base for logging, permissions and cost accounting, plus domain adapters. MCP and A2A help with connecting systems but don't solve this. Five: measurement quality, because benchmark checkers can be brittle, so audited variants should be preferred.
+
+## Slide 18: My two cents  ·  starts 14:29
+
+Now my own opinion. What the paper gets right: the six-component formalism is the best mental model of an agent runtime I've seen, and I respect that the authors label their evidence as observational instead of overselling it. Where I'd push back: first, the evidence can't fully separate harness design from compute. Many of the biggest gains come with ten times the tokens or more retries. I'd like a follow-up that fixes the token budget and varies only the harness. Second, safety gets less space than capability. Verification is one of the six components, but almost all the numbers are success rates. Other 2026 surveys on MCP tool security and agent memory security show the attack surface growing as harnesses get write access and persistent state. Third, co-evolution is exciting but hard to evaluate honestly, because the system can overfit to the benchmark you're using to measure it.
+
+## Slide 19: Takeaways for builders  ·  starts 15:32
+
+If you build agents, here's what I'm taking away, and what I'm changing in my own RAG and multi-agent work. One: before paying for a bigger model, try a cleaner interface. Mini-SWE-agent shows that simple and well-designed often wins. Two: log everything. Without traces you can't tell which of the six components failed. Three: report accuracy together with cost. Thirteen points for ten times the tokens may not fit a production budget. Four: use the strongest oracle you can get. If you can make the task testable, do it, and let the loop retry against the tests.
+
+## Slide 20: Thank you  ·  starts 16:14
+
+To sum up: a modern agent's score is really a score for the model in its harness. As frontier models start to look alike on static tests, I expect more of the competition to move to harness design. The references are on this slide, and the full article, figures and slides are in my GitHub repository. Thanks for watching.
+
+---
+
+## Recording checklist
+
+- Open the deck in PowerPoint (or the PDF) and start Presenter View so the notes are visible only to you.
+- Record screen and voice with OBS Studio, Zoom (record to computer) or PowerPoint's built-in *Record* tab. Use 1080p.
+- Keep the webcam small in a corner, or leave it off. The slides are the main content.
+- Pause about a second between slides. If you speak faster than ~140 wpm, slow down on the evidence slides (10–14) so the video stays over 15 minutes.
+- Upload to YouTube (Public or Unlisted, whichever your professor accepts), then paste the link into the README and the class spreadsheet.
+- Also commit the video file (or a link to it, if it is over GitHub's 100 MB limit) to the `video/` folder.
