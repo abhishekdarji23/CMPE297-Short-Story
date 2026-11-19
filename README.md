@@ -12,14 +12,9 @@ A short story on **agent system and harness design**, built around a recent surv
 
 | Deliverable | Link |
 |---|---|
-| Medium article | `https://medium.com/@<your-handle>/...` *(add after publishing)* |
-| SlideShare deck | `https://www.slideshare.net/...` *(add after uploading)* |
-| YouTube presentation (15+ min) | `https://youtu.be/...` *(add after uploading)* |
-| Slides (PowerPoint) | [`slides/Agent_Harness_Short_Story.pptx`](slides/Agent_Harness_Short_Story.pptx) |
-| Slides (PDF) | [`slides/Agent_Harness_Short_Story.pdf`](slides/Agent_Harness_Short_Story.pdf) |
-| Article source (Markdown + figures) | [`article/medium_article.md`](article/medium_article.md) |
-| Video script with timings | [`video/video_script.md`](video/video_script.md) |
-| Recorded video | [`video/`](video/) |
+| Medium article | https://medium.com/@abhishek.darji/its-not-just-the-model-it-s-the-harness-8a8e8b5f6de0?sharedUserId=abhishek.darji |
+| YouTube presentation (15+ min) |  |
+| Slides (PowerPoint) | https://docs.google.com/presentation/d/1HvYO-wU5jcnqwa6dGgg87t00nDt0vAHg/edit?usp=sharing&ouid=112596860923378988724&rtpof=true&sd=true |
 
 ---
 
