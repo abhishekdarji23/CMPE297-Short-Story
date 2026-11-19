@@ -13,7 +13,7 @@ A short story on **agent system and harness design**, built around a recent surv
 | Deliverable | Link |
 |---|---|
 | Medium article | https://medium.com/@abhishek.darji/its-not-just-the-model-it-s-the-harness-8a8e8b5f6de0?sharedUserId=abhishek.darji |
-| YouTube presentation (15+ min) |  |
+| YouTube presentation | https://drive.google.com/drive/folders/1GoHmXqwGauAOh1D6ZVnyReFeuNXMO8b3?usp=sharing |
 | Slides (PowerPoint) | https://docs.google.com/presentation/d/1HvYO-wU5jcnqwa6dGgg87t00nDt0vAHg/edit?usp=sharing&ouid=112596860923378988724&rtpof=true&sd=true |
 
 ---
